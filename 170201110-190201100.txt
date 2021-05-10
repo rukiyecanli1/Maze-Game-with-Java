@@ -1,0 +1,803 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+import java.awt.HeadlessException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+
+
+
+public class Oyun extends JFrame {
+    
+    final static int ARow = 0,ACol = 3, BRow = 0 ,BCol = 10 ,CRow = 5, CCol = 0, DRow = 10  ,DCol = 3;
+
+    public Oyun(String title) throws HeadlessException {
+        
+        super(title);
+        
+    }
+    
+     public static ArrayList<Oyuncu> oyuncu = new ArrayList<Oyuncu>();
+     public static ArrayList<Dusman> dusman = new ArrayList<Dusman>();
+
+    public ArrayList<Oyuncu> getOyuncular() {
+        return Oyun.oyuncu;
+    }
+    
+     public ArrayList<Dusman> getDusmanlar() {
+        return Oyun.dusman;
+    }
+    
+
+ 
+        public static void main(String[] args) throws IOException {
+        Scanner input = new Scanner(System.in);
+        File harita = new File("harita.txt");
+        int row = 0, i, j = 0;
+        byte gargamelNum = 0, azmanNum = 0;
+        int[][] map = new int[11][13];
+        String[] output = null;
+
+        if (!harita.exists()) {
+            System.out.println(harita.getName() + " adli dosya bulunamadi.");
+            System.exit(0);
+        }
+
+        BufferedReader reader = null;
+        /*satirlari okumak icin olusturuldu*/
+        FileReader forMap = null;
+
+        try {
+            reader = new BufferedReader(new FileReader(harita));
+            forMap = new FileReader("harita.txt");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Oyun.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        String line = reader.readLine();/*satiri okumak icin tutulacak degisken */
+
+        while (!(line.startsWith("0") || line.startsWith("1"))) {
+
+            if (line.length() > 0) {
+                row++;
+                output = line.split("[,:]");/*string parse etme islemleri*/
+                System.out.println(output[1]);/*karakter adini verir*/
+                System.out.println(output[3]);/*kapi bilgisini verir*/
+             if (output[1].equalsIgnoreCase("Gargamel")) {
+                    if (output[3].equalsIgnoreCase("a")) {
+                        dusman.add(new Gargamel ("Gargamel" , "dusman", ARow, ACol));
+                        gargamelNum++;
+                    } else if (output[3].equalsIgnoreCase("b")) {
+                        dusman.add(new Gargamel("Gargamel", "dusman", BCol, BRow));
+                        gargamelNum++;
+                    } else if (output[3].equalsIgnoreCase("c")) {
+                        dusman.add(new Gargamel("Gargamel", "dusman", CCol, CRow));
+                        gargamelNum++;
+                    } else if (output[3].equalsIgnoreCase("d")) {
+                        dusman.add(new Gargamel("Gargamel", "dusman", DCol, DRow));
+                        gargamelNum++;
+                    }
+
+                } else if (output[1].equalsIgnoreCase("Azman")) {
+                     azmanNum++;
+                    if (output[3].equalsIgnoreCase("a")) {
+                        dusman.add(new Azman("Azman" , "dusman", ACol, ARow));
+                        azmanNum++;
+                    } else if (output[3].equalsIgnoreCase("b")) {
+                        dusman.add(new Azman("Azman" , "dusman", BCol, BRow));
+                        azmanNum++;
+                    } else if (output[3].equalsIgnoreCase("c")) {
+                        dusman.add(new Azman("Azman" , "dusman", CCol, CRow));
+                        azmanNum++;
+                    } else if (output[3].equalsIgnoreCase("d")) {
+                        dusman.add(new Azman("Azman" , "dusman", DCol, DRow));
+                        azmanNum++;
+                    }
+                } 
+            }
+            line = reader.readLine();
+        }
+
+        try {
+
+            int value, say = 1;
+            /*say = sutun sayilari*/
+            i = 0;
+            while ((value = forMap.read()) != -1) {
+                /*Value,dosyanin sonuna gelince -1 olur*/
+
+                if (value == '0' || value == '1') 
+                /*harita bilgisinden onceki verileri kullanmamak iin */ {
+               
+                    if (value == 48)  {
+                        map[i][j] = 0;
+                        /*ascII tablosuna gore 0 sayisi 48 e esit gelir ve okunan degeri map dizisine atadik*/
+                    } else {
+                        map[i][j] = 1;
+                    }
+
+                    say++;
+                    /*sutun sayisini arttirdik*/
+                    j++;
+                    if (say == 14) {
+                        say = 1;
+                        j = 0;
+                        /*map dizisinde sutun degerini gosteren j degiskenini sifirladik*/
+                        i++;
+                        /*map dizisinde satir sayisinin degerini gosteren i degiskenini arttirdik*/
+                    }
+                }
+
+            }
+        } finally {
+            forMap.close();
+            
+        }
+
+        /*haritanin konum bilgileri*/
+        for (i = 0; i < 11; i++) {
+            for (j = 0; j < 13; j++) {
+                System.out.print(map[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+
+
+        System.out.println("KARAKTERLER:\nGÖZLÜKLÜ ŞİRİN her adımda 2 birim ilerler. GÖZLÜKLÜ ŞİRİN İÇİN G HAFINE BASIN\n"
+                + " TEMBEL ŞİRİN her adımda 1 birim ilerler. TEMBEL ŞİRİN İÇİN T HAFINE BASIN");
+        System.out.println("\nKARAKTERINI SEC VE BASLA !\nSECIM:");
+        String gamerchr = input.nextLine();
+
+        if (gamerchr.equalsIgnoreCase("g")) {
+            oyuncu.add(new Gozluklu("Gozluklu", "oyuncu", 6,5,20));
+
+        } else if (gamerchr.equalsIgnoreCase("t")) {
+            oyuncu.add(new Tembel("Tembel", "oyuncu", 6,5,20));
+        } else {
+            while (!(gamerchr.equalsIgnoreCase("g") || gamerchr.equalsIgnoreCase("t"))) {
+                System.out.println("Lutfen g ya da t harfi giriniz!");
+                gamerchr = input.nextLine();
+                if (gamerchr.equalsIgnoreCase("g")) {
+                    oyuncu.add(new Gozluklu("Gozluklu", "oyuncu", 6,5,20));
+                } else if (gamerchr.equalsIgnoreCase("t")) {
+                    oyuncu.add(new Tembel("Tembel_Sirin", "oyuncu",6,5,20));
+                }
+            }
+
+        }
+
+        Grafik grafik = new Grafik();
+        /*grafik nesnesi olusturuldu*/
+    
+        grafik.Oyuncular = oyuncu;
+        grafik.Dusmanlar = dusman;
+        grafik.harita = map;
+
+        Oyun screen = new Oyun("THE SMURFS");
+        screen.setSize(700, 700);
+        screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        
+        grafik.requestFocus();
+        /*Klavyeden girdi alinacagi icin odagi grafik nesnesine verdik*/
+        grafik.addKeyListener(grafik);
+        /*Klavyeden gonderilen girdileri alir*/
+        grafik.setFocusable(true);
+        /*Odak grafik nesnesine verildi*/
+        grafik.setFocusTraversalKeysEnabled(false);
+        /*Klavye islemlerinnin gerceklesmesi icin yazildi*/
+
+        screen.add(grafik);
+        screen.setVisible(true);
+        /*JFramemin gozukmesi icin girilmis bir komut*/
+        screen.setResizable(true);
+        /*Pencere boyutu degistirilebilir nitelikte olmasi icin yazildi*/
+
+        grafik.secilenKarakter = gamerchr;
+  
+        for(i=0;i<dusman.size()+oyuncu.size()-1;i++)
+        {
+       
+        }
+    }
+}
+
+  
+      
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+
+public abstract class Oyuncu extends Karakter{
+    
+    private int skor;
+    
+     public Oyuncu(){
+       
+    }
+
+    public Oyuncu(String karakter_ad, String karakter_tür, int x, int y, int skor) {
+        super( karakter_ad, karakter_tür, x, y);
+        this.skor=skor;
+    }
+
+    public int getSkor() {
+        return skor;
+    }
+
+    public void setSkor(int skor) {
+        this.skor = skor;
+    }
+    
+    public abstract void PuaniGöster();
+  
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+public class Puan {
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+
+public class Tembel extends Oyuncu{
+
+    public Tembel (){
+        
+    }
+    public Tembel(String karakter_ad, String karakter_tür, int x, int y, int skor) {
+        super(karakter_ad, karakter_tür,  x, y,skor);
+    }
+    
+    
+    @Override
+    public void PuaniGöster(){
+    
+    }
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+/**
+ *
+ * @author User
+ */
+public class Obje {
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+/**
+ *
+ * @author User
+ */
+public class Lokasyon {
+    
+    private int x ;
+    private int y ;
+    
+    public Lokasyon() {
+
+    }
+
+    public Lokasyon(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+/**
+ *
+ * @author User
+ */
+public class Karakter extends Lokasyon {
+    
+    private String karakter_ad;
+    private String karakter_tür;
+
+    
+      public Karakter(){
+    }
+      
+    public Karakter(String karakter_ad, String karakter_tür, int x, int y) {
+        super(x, y);
+        this.karakter_ad=karakter_ad;
+        this.karakter_tür=karakter_tür;
+    }
+
+    public String getKarakter_ad() {
+        return karakter_ad;
+    }
+
+    public void setKarakter_ad(String karakter_ad) {
+        this.karakter_ad = karakter_ad;
+    }
+
+    public String getKarakter_tür() {
+        return karakter_tür;
+    }
+
+    public void setKarakter_tür(String karakter_tür) {
+        this.karakter_tür = karakter_tür;
+    }
+    
+    public void enKisaYol(){
+   
+    }
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+public class Grafik extends JPanel implements KeyListener, ActionListener {
+
+    private BufferedImage gozluklu, tembel, sirine, gargamel, azman, win, gameover;
+    Timer timer = new Timer(100, this);
+    public int grphcDistance;
+    public int secilenKarakterX = 300;
+    public int secilenKarakterY = 330;
+    public String[] kapilar = new String[20];
+    public String secilenKarakter;
+    public int[][] harita = new int[11][13];
+
+    int alpha = 70;
+    Color renk0 = new Color(255, 20, 147, alpha);
+    Color renk1 = new Color(0, 255, 27, alpha);
+    Color renk2 = new Color(255, 0, 0, alpha);
+    Queue<Lokasyon> copyQueue = new ArrayDeque<>();
+    ArrayList<Oyuncu> Oyuncular = new ArrayList<>();
+    ArrayList<Dusman> Dusmanlar = new ArrayList<>();
+
+    Gozluklu gzl = new Gozluklu();
+    Tembel tm = new Tembel();
+
+    public Grafik() {
+
+        try {
+            gozluklu = ImageIO.read(new FileImageInputStream(new File("src\\TheSmurfs_Game\\gozluklu.png")));
+            tembel = ImageIO.read(new FileImageInputStream(new File("src\\TheSmurfs_Game\\tembel.png")));
+            sirine = ImageIO.read(new FileImageInputStream(new File("src\\TheSmurfs_Game\\sirine.jpg")));
+            gargamel = ImageIO.read(new FileImageInputStream(new File("src\\TheSmurfs_Game\\gargamel.png")));
+            azman = ImageIO.read(new FileImageInputStream(new File("src\\TheSmurfs_Game\\azman.jpg")));
+          //   win = ImageIO.read(new FileImageInputStream(new File("win.png")));
+          //   gameover = ImageIO.read(new FileImageInputStream(new File("gameover.png")));*/
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setBackground(Color.WHITE);
+
+        timer.start();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+
+        super.paint(g);
+       
+        int i, j, a;
+       
+
+        gzl.setX(306);
+        gzl.setY(336);
+        tm.setX(306);
+        tm.setY(336);
+
+      
+
+        g.setColor(Color.GRAY);
+        int y = 0;
+        for (i = 0; i < 11; i++) {
+            for (j = 0; j < 13; j++) {
+                if (harita[i][j] == 0) {
+                    g.fillRect(60 + (j * 40), 130 + y, 40, 40);
+                } 
+            }
+            y += 40;
+        }
+
+        for (j = 0, a = 0; j < 14; a = a + 40, j++) {
+            g.setColor(Color.BLACK);
+            g.drawLine(60 + a, 130, 60 + a, 570);
+        }
+
+        for (i = 0, a = 0; i < 12; a = a + 40, i++) {
+            g.drawLine(60, 130 + a, 580, 130 + a);
+        }
+
+        Font font = new Font("Tahoma", Font.CENTER_BASELINE, 12);
+
+        g.setFont(font);
+
+        int locationValues = 0;//matris'i koordinat sistemi gibi kullanaca˝m˝z iÁin say˝land˝rma yapt˝k 
+        String sLocationValues; //integer olan locationValues'u stringe Áevirip bast˝rmak iÁin
+        for (i = 0; i < 521 - 40; i += 40) {
+            sLocationValues = String.valueOf(locationValues); //int degeri ekrana basabilmek icin stringe cevirdik
+            g.drawString(sLocationValues, i + 75, 590); //y sabit x artarak ekrana basiliyor(matrisin x-ekseni)
+            locationValues++;
+        }
+
+        locationValues = 0;
+        for (i = 0; i < 401; i += 40) {
+            sLocationValues = String.valueOf(locationValues); //int degeri ekrana basabilmek icin stringe cevirdik
+            g.drawString(sLocationValues, 45, i + 155); //matrisin y-ekseni
+            locationValues++;
+        }
+
+        g.setColor(Color.RED);
+        g.fillRect(220 - 40, 130, 40, 40); // kapı A
+        g.fillRect(540 - 80, 130, 40, 40); // B 
+        g.fillRect(60, 130 + 5 * 40, 40, 40);  // C
+        g.fillRect(220 - 40, 530, 40, 40); // D
+        g.setColor(Color.yellow);
+        g.fillRect(300, 330, 40, 40); // oyuncunun başlangıç noktası (sarı)
+
+        g.setColor(Color.CYAN);
+        g.drawString("A", 237 - 40, 153);
+        g.drawString("B", 557 - 80, 153);
+        g.drawString("C", 77, 353);
+        g.drawString("D", 237 - 40, 553);
+
+        /*cikista yer alan Sirine */
+        g.drawImage(sirine, 620 - 20, 480 - 100, sirine.getWidth() / 13, sirine.getHeight() / 13, this);
+  
+
+        if (secilenKarakter.equalsIgnoreCase("g")) {
+            g.drawImage(gozluklu, secilenKarakterX, secilenKarakterY, gozluklu.getWidth() / 17, gozluklu.getHeight() / 17, this);
+        } else if (secilenKarakter.equalsIgnoreCase("t")) {
+            g.drawImage(tembel, secilenKarakterX, secilenKarakterY, tembel.getWidth() / 3, tembel.getHeight() / 3, this);
+        }
+
+        /*harita.txt den alinan bilgilere gore dusman karakterlerin turune ve sayisine gore konumlari kodlanmistir*/
+        for (i = 0; i < 2; i++) {
+
+            if (Dusmanlar.get(i).getKarakter_ad().contains("Gargamel")) {
+                g.drawImage(gargamel, 60 + (Dusmanlar.get(i).getX()) * 40, 130 + (Dusmanlar.get(i).getY() * 40),
+                        gargamel.getWidth() / 10, gargamel.getHeight() / 10, this);
+            } else if (Dusmanlar.get(i).getKarakter_ad().contains("Azman")) {
+                g.drawImage(azman, 60 + (Dusmanlar.get(i).getX()) * 40, 12 + (Dusmanlar.get(i).getX() * 40),
+                        azman.getWidth() / 22, azman.getHeight() / 14, this);
+            }
+
+            
+            /*oyuncu karakterin puanı bittiginde oyunun bittigini ifade eder*/
+            if (Oyuncular.get(Oyuncular.size() - 1).getSkor() == 0) {
+                ////    	g.drawImage(gameover,0,65, gameover.getWidth(), gameover.getHeight(), this);
+            }
+            /*secilen karakter Sirine ye ulasmissa kullaniciya kazandigina dair bilgi verilir*/
+             if (secilenKarakterX > 621) {
+           //	g.drawImage(win, 0, 65, win.getWidth(), win.getHeight(), this);
+                 System.out.println("kazandın!");
+                }
+
+        }
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
+    }
+
+    public void saga(int birim) {
+
+        secilenKarakterX += birim;
+
+    }
+
+    public void sola(int birim) {
+
+        secilenKarakterX -= birim;
+
+    }
+
+    public void yukari(int birim) {
+
+        secilenKarakterY -= birim;
+
+    }
+
+    public void asagi(int birim) {
+
+        secilenKarakterY += birim;
+
+    }
+
+    public void keyPressed(KeyEvent e) {
+
+        int button = e.getKeyCode();
+        int i = (secilenKarakterY - 130) / 40;   // seçilen karakterin bulunduğu y konumu
+        int j = (secilenKarakterX - 60) / 40;    // seçilen karakterin bulunduğu x konumu
+
+        if (button == KeyEvent.VK_LEFT) {
+
+            if (secilenKarakter.equalsIgnoreCase("g") && harita[i][j - 1] == 1 && harita[i][j - 2] != 0 ) {  // eğer karakterin  solunda duvar yoksa 
+                sola(80);                                                                                   // sola gidebilecek           
+            } else if (secilenKarakter.equalsIgnoreCase("t") && harita[i][j - 1] == 1) {
+                sola(40);
+            }
+
+        }
+
+        if (button == KeyEvent.VK_RIGHT) {
+
+            if (secilenKarakter.equalsIgnoreCase("g") && harita[i][j + 1] == 1 && harita[i][j + 2] != 0 ) {  // eğer karakterin  sağında duvar yoksa 
+                saga(80);                                                                                       //  sağa gidebilecek,
+            } else if (secilenKarakter.equalsIgnoreCase("t") && harita[i][j + 1] == 1) {
+                saga(40);
+            }
+        }
+
+        if (button == KeyEvent.VK_UP) {
+            if (secilenKarakter.equalsIgnoreCase("g") && harita[i - 1][j] == 1 && harita[i - 2][j] != 0) {  // eğer karakterin  yukarısında duvar yoksa 
+                yukari(80);                                                                                 // yukarı gidebilecek 
+            } else if (secilenKarakter.equalsIgnoreCase("t") && harita[i - 1][j] == 1) {
+                yukari(40);
+            }
+        }
+
+        if (button == KeyEvent.VK_DOWN) {
+            if (secilenKarakter.equalsIgnoreCase("g") && harita[i + 1][j] == 1 && harita[i + 2][j] != 0) {  // eğer karakterin aşağısında duvar yoksa  
+                asagi(80);                                                                                   // aşağı gidebilecek
+            } else if (secilenKarakter.equalsIgnoreCase("t") && harita[i + 1][j] == 1) {
+                asagi(40);
+            }
+        }
+    } // keyPress sonu
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void repaint() {
+        super.repaint();
+    }
+
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+import java.awt.event.KeyEvent;
+
+/**
+ *
+ * @author User
+ */
+public class Gozluklu extends Oyuncu {
+
+    private String dosya="src\\img\\gozluklu.png";
+    
+    
+    public Gozluklu(){
+        
+    }
+    public Gozluklu( String karakter_ad, String karakter_tür, int x, int y, int skor) {
+        super(karakter_ad, karakter_tür, x, y,  skor);
+    }
+
+    @Override
+    public void PuaniGöster() {
+       
+    }
+    
+    public void gozlukluHareketEt(int sayi){
+       
+    }
+    
+    
+    
+   
+    
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+
+public class Gargamel extends Dusman {
+
+    public Gargamel(String karakter_ad, String karakter_tür, int x, int y ) {
+        super( karakter_ad, karakter_tür, x, y);
+    }
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+/**
+ *
+ * @author User
+ */
+class Dusman extends Karakter{
+    
+       public Dusman( String karakter_ad, String karakter_tür, int x, int y) {
+        super(karakter_ad, karakter_tür, x, y );
+    }
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+/**
+ *
+ * @author User
+ */
+
+public class Azman extends Dusman {
+
+    public Azman( String karakter_ad, String karakter_tür, int x, int y) {
+        super(karakter_ad, karakter_tür, x, y );
+    }
+    
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TheSmurfs_Game;
+
+import java.util.concurrent.TimeUnit;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+/**
+ *
+ * @author User
+ */
+public class Altin {
+    
+    private int sayi;
+    final int puan = 5;
+   
+    public Altin() {
+      
+    }
+
+    public Altin(int sayi) {
+        this.sayi = sayi;
+    }
+    
+    
+    static void dispLogo(JFrame frame) throws InterruptedException
+{
+    ImageIcon image = new ImageIcon("altin.png");
+    JLabel imageLabel = new JLabel(image); 
+    frame.add(imageLabel);
+    imageLabel.setVisible(true);
+    TimeUnit.SECONDS.sleep(5);
+    imageLabel.setVisible(false);
+}
+    
+    
+    
+    
+   
+   
+}
+

@@ -1,0 +1,55 @@
+ÖZET
+Programlama Laboratuvarı II dersi birinci projesinde bizden nesneye yönelik 
+programlama ve veri yapıları ve algortimaları ile bir labiret oyunu tasarlamamız 
+istendi. Bu oyunda iki oyuncu ve iki düşman olmak üzere toplam dört karakter 
+bulunmakta; iki oyuncu karakterlerinden biri kullanıcın seçimi ile yön tuşlarıyla 
+hareket edip Şirine'ye ulaşmayı hedeflemektedir.
+ 
+
+TEMEL BİLGİLER
+Yazdığımız projede pogramlama dili olarak Java, arayüz tasarımı için Swing kutuphanesi kullanılmıştır.
+
+GİRİŞ
+Kart oyunu projemiz dosyadan okuma, nesneye yönelik programlama ve veri yapıları bilgisi gerektiren, oyunun
+işleyişi bakımından algoritma yeteneğimizi geliştirecek ayrıca Java'da Encapsulation, Inheritance, 
+Polymorphism, Abstraction bilgilerimizi pekiştirecek bir projedir. 
+
+Programımız dosyadan düşman karakterleri ve grafik bilgilerinin okuyup grafik oluşturabilir, kullanıcı yön tuşları
+ile bu grafikte oyuncu karakterleri hareket ettirebilir. Nesneye yönelik programlama kısmında diğer sınıflardan 
+kalıtım alabilir. Abstrtact metodları override ederek onları gerekli sınıflarda kullanabilir. Ayrıca sınıflardaki 
+private özelliklere getter-setter metodları ile her yerden ulaşabilir. 
+ 
+
+YÖNTEM
+Programımızda öncelikle gerekli olan sınıfları duruma göre soyut ve soyut olmayacak şekilde tanımladık.
+
+Daha sonra sınıflarımızda olması gereken özellikleri, getter-setter metodlarını oluşturduk. Karakter 
+sınıfı gibi daha sonra özelliklerini farklı sınıflarda da kullanacağımız sınıfları kalıtım aldık. Super() 
+fonksiyonunu yavru sınıfa atama yapmak için kullandık. 
+
+Sonra oyun için gerekli olan metodları oluşturmaya başladık. Bazı metodları ata sınıftan yavru sınıfa override 
+ettik yani yavru sınıflarda ortak olarak kullanılacak metodları ana sınıftan çağırıp metodlarının dönüş 
+tiplerini ve parametre özelliklerini değiştirmeyip içeriklerini gerektiği şekilde düzenledik. 
+
+Projemizin Grafik sınıfında oyunun arayüz kısmını oluşturduk. Oyun adlı main sınıfımızda gerekli nesneleri 
+yarattık. Dosyadan düşman karakterleri okuma ve grafik okuma kısmını gerçekleştirdik. Bu bilgiler ile ekranda 
+grafik oluşturduk ve düşman karakterleri gerekli konumlara yerleştirdik. 
+
+Daha sonra kullanıcıdan bir oyuncu karakter(Gözlüklü veya Tembel şirin) seçmesini istedik. Bu karakteri
+grafikteki sarı bloğa yerleştirdik ve kullanıcının bu karakteri yön tuşlarıyla hareket ettirebilmesini sağladık. 
+Kullanıcı Gözlüklü şirini seçerse ikişer birim, Tembel Şirin'i seçerse birer birim hareket edebilir. 
+
+Düşman karakterlerin oyuncu karakterlere ulaşması için bizden dijksta algoritması ile en kısa yolu bulmamız 
+istenmişti ancak uzun uğraşlara rağmen bu isteri gerçekleştiremedik. Bu nedenle projemizi burada bırakmak zorunda kaldık.
+
+SONUÇ
+Bize verilen proje ile dosyadan matris okuma, nesneye yönelik programlama gibi konularda bilgilerimizi pekiştirdik. 
+Programımızda kalıtım aldık, bazı fonksiyonları override ettik. Abstract fonksiyonlar oluşturduk. Oyunumuzda düşman 
+karakterleri ekranda gösterebildik, seçilen oyuncu karakterini kullanıcının yön tuşlarına basmasıyla hareket ettirdik. 
+Ancak dijkstra en kısa yol algoritması kodunu oyunumuza uyarlayamadığımz için düşman karakterleri hareket ettiremedik. 
+
+KAYNAKÇA
+https://www.youtube.com/watch?v=p9Y-NBg8eto&ab_channel=macheads101  
+http://compsci.ca/v3/viewtopic.php?t=40362                          
+https://www.youtube.com/watch?v=dyrvXiMumXc&ab_channel=LeoOno      
+https://github.com/seymanurmutlu/Shortest-Path-Star-Wars-Game-Prolab2.1

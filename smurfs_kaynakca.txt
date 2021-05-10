@@ -1,0 +1,5 @@
+https://www.youtube.com/watch?v=p9Y-NBg8eto&ab_channel=macheads101  // moving graphichs with arrow keys
+http://compsci.ca/v3/viewtopic.php?t=40362                          // same like yukarıdaki video
+https://www.youtube.com/watch?v=dyrvXiMumXc&ab_channel=LeoOno       //Java Coding from scratch - Let's code a very simple maze solver (depth first search algorithm)
+https://github.com/seymanurmutlu/Shortest-Path-Star-Wars-Game-Prolab2.1
+https://github.com/mertbilgic/Star-Wars
